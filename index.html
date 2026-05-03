@@ -1445,6 +1445,76 @@
     background:var(--indigo-claro);font-size:12.5px;color:var(--morado-oscuro);font-weight:500;margin-top:4px;
   }
 
+  /* -------- TIMELINE HORIZONTAL EN ESCRITORIO -------- */
+  @media (min-width:900px){
+    .timeline{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:32px;
+      margin-top:64px;padding:48px 0 0 0;position:relative;
+    }
+    /* línea horizontal a 24px del top de timeline (centrada en la zona del padding) */
+    .timeline::before{
+      left:0;right:0;top:24px;bottom:auto;
+      width:auto;height:2px;
+      background:linear-gradient(to right, rgba(111,76,158,.06), rgba(111,76,158,.18) 50%, rgba(111,76,158,.06));
+      transform:translateY(-50%);
+    }
+    .timeline::after{
+      left:0;right:auto;top:24px;
+      width:0;height:2px;
+      background:linear-gradient(to right, var(--morado), #b48fe8 80%, rgba(180,143,232,.4));
+      transform:translateY(-50%);
+      animation:tlProgressH 8s linear infinite;
+    }
+    .phase{padding:0;position:relative}
+    /* dot al inicio de cada columna, alineado verticalmente sobre la línea */
+    /* phase top = timeline padding-top (48). Dot a top:-24 → y = 48-24 = 24 desde timeline top, igual que la línea */
+    .phase::before{
+      content:'';position:absolute;left:0;top:-24px;
+      transform:translateY(-50%) scale(.85);
+      width:15px;height:15px;z-index:2;
+      border-radius:50%;background:#fff;
+      border:2px solid rgba(111,76,158,.45);
+      transition:background .5s ease, border-color .5s ease, box-shadow .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1);
+    }
+    .phase::after{
+      content:'';position:absolute;left:0;top:-24px;
+      transform:translateY(-50%) scale(0);
+      width:15px;height:15px;border-radius:50%;
+      background:radial-gradient(circle, rgba(111,76,158,.35) 0%, rgba(111,76,158,0) 70%);
+      pointer-events:none;opacity:0;
+      transition:transform .8s ease, opacity .8s ease;
+    }
+    .phase.is-active::before{
+      background:radial-gradient(circle at 35% 30%, #b48fe8, var(--morado) 70%);
+      border-color:var(--morado);
+      box-shadow:0 0 0 5px rgba(111,76,158,.14), 0 0 0 10px rgba(111,76,158,.06), 0 4px 14px -2px rgba(111,76,158,.5);
+      transform:translateY(-50%) scale(1);
+      animation:tlPulseH 2.4s ease-in-out infinite;
+    }
+    .phase.is-active::after{
+      transform:translateY(-50%) scale(2.4);opacity:1;
+      animation:tlRippleH 1.6s ease-out;
+    }
+    /* el dot original al lado del hito se oculta en desktop */
+    .phase .hito::before, .phase .hito::after{display:none}
+  }
+  @keyframes tlPulseH{
+    0%,100%{box-shadow:0 0 0 5px rgba(111,76,158,.14), 0 0 0 10px rgba(111,76,158,.06), 0 4px 14px -2px rgba(111,76,158,.5)}
+    50%   {box-shadow:0 0 0 8px rgba(111,76,158,.10), 0 0 0 16px rgba(111,76,158,.03), 0 4px 18px -2px rgba(111,76,158,.65)}
+  }
+  @keyframes tlProgressH{
+    0%   {width:0; opacity:1}
+    25%  {width:calc(33% + 8px); opacity:1}
+    50%  {width:calc(66% + 8px); opacity:1}
+    75%  {width:calc(100% - 12px); opacity:1}
+    90%  {width:calc(100% - 12px); opacity:1}
+    100% {width:calc(100% - 12px); opacity:0}
+  }
+  @keyframes tlRippleH{
+    0%   {transform:translate(0,-50%) scale(.6); opacity:.7}
+    100% {transform:translate(0,-50%) scale(3); opacity:0}
+  }
+
   /* Inversión pricing — 3 plans */
   .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px;align-items:stretch}
   @media (max-width:860px){.pricing{grid-template-columns:1fr}}
